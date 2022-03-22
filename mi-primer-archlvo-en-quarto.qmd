@@ -1,0 +1,65 @@
+---
+title: "Primer documento en formato Quarto"
+author: "Aleksander Dietrichson"
+format: pdf
+editor: visual
+---
+
+## Quarto
+
+Quarto es un formato de permite intercalar codigo con texto comun.
+
+```{r}
+my_data <- data.frame(
+  nombre = c("Azul","Sofia","Matias","Sasha"),
+  apellido = c(" Battagliotto","Gonzalez","Salto","Dietrichson"),
+  edad = c( 21,24,22,49)
+)
+my_data
+```
+
+## 
+
+## Sintaxis de R
+
+Armar una sola variable de tipo caracter: Van los elementos entre comillas y se juntan con `c` y parentesis `()` .
+
+```{r}
+nombres = c("Sasha", "Sofia", 'Bernice', "Matias", "Nicolas", "Jose")
+```
+
+```{r}
+edad = c(49, 21, 24, 22, 25, 24) # poner "49" = "cuarenta y nueve" "fortini" 
+
+```
+
+```{r}
+es_estudiante = c(FALSE, TRUE, TRUE, TRUE, TRUE, TRUE)
+```
+
+```{r}
+my_data = data.frame(
+  nombres,
+  edad,
+  es_estudiante
+)
+```
+
+## Un mini analisis
+
+```{r}
+library(tidyverse)
+
+my_data %>% 
+  summarize(
+    edad = mean(edad)
+  )
+```
+
+```{r}
+my_data %>% 
+  filter(es_estudiante) %>% 
+    summarize(
+    edad = mean(edad)
+  )
+```
