@@ -1,0 +1,32 @@
+---
+title: "Instrucciones para fork"
+author: "Pablo Pagnone"
+date: "24/3/2022"
+output: html_document
+---
+
+## Instrucciones para envio de trabajos
+
+- Logueate en www.github.com
+- Ingresa al repositorio https://github.com/dietrichson/unsam_2022
+- Realiza un fork (Botón arriba a la derecha). Esto generara un nuevo repositorio llamado "unsam_2022" en tu cuenta de github.
+- Ingresa a tu respositorio (https://github.com/ <-- TU USUARIO --> /unsam_2022)
+
+Ahora podes bajar el repositorio para trabajar localmente, en la linea de comando ingresá:
+
+```{bash}
+git clone https://github.com/<-- TU USUARIO -->/unsam_2022
+```
+
+Realiza tus cambios, commit y push a tu repositorio.
+
+## ¿Como enviar a tu profesor ?
+
+Los cambios que realizastes estas en tu repositorio para enviarlos a tu profesor necesitas realizar  un Pull request al repositorio de tu profesor:
+
+- Ingresa a tu respositorio (https://github.com/ <-- TU USUARIO --> /unsam_2022)
+- Arriba a la izquierda verás "Pull Requests" 
+- Luego presioná "New Pull Request"
+- De repositorio base seleccioná "dietrichson/unsam_2022" (por defecto dado que es el repositorio de origen).
+- De repositorio "head" seleccioná tu branch (por defecto es el creado).
+- Crea el PR.
