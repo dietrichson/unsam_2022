@@ -1,0 +1,87 @@
+---
+title: "Analisis Inicial Exploratorio Datos Subte"
+author: "Aleksander Dietrichson"
+format: html
+editor: visual
+---
+
+## Datos
+
+Los Datos provienen de <https://data.buenosaires.gob.ar/dataset/subte-viajes-molinetes> y corresponden a viajes en subterraneo y otros del año 2022.
+
+```{r}
+library(readr)
+my_data <- read_csv("datadat-ab-usos-2022.csv")
+```
+
+## Amplitud de los datos
+
+Se importaron `r nrow(my_data)`
+
+```{r}
+nrow(my_data)
+```
+
+### Rango de fechas
+
+```{r}
+range(my_data$DIA_TRANSPORTE)
+```
+
+### Número de empresas distintas
+
+```{r}
+unique(my_data$NOMBRE_EMPRESA) -> mis_empresas
+
+```
+
+### Tipo de transporte
+
+```{r}
+unique(my_data$TIPO_TRANSPORTE)
+```
+
+### Viajes por día
+
+```{r}
+library(tidyverse)
+my_data %>% 
+  group_by(DIA_TRANSPORTE) %>% 
+  summarize(
+    numero_de_viajes = sum(CANTIDAD)
+  ) -> mi_resumen
+
+my_resumen <- my_data %>% 
+  group_by(DIA_TRANSPORTE) %>% 
+  summarize(
+    numero_de_viajes = sum(CANTIDAD)
+  )
+
+```
+
+### Centralización y Dispersión
+
+```{r}
+mean(mi_resumen$numero_de_viajes)
+median(mi_resumen$numero_de_viajes)
+sd(mi_resumen$numero_de_viajes)
+range(mi_resumen$numero_de_viajes)
+```
+
+```{r}
+hist(mi_resumen$numero_de_viajes)
+```
+
+```{r}
+mi_resumen %>% 
+  ggplot(aes(numero_de_viajes))+
+  geom_histogram(binwidth = 1000000)
+```
+
+### Linea de tiempo
+
+```{r}
+mi_resumen %>% 
+  ggplot(aes(DIA_TRANSPORTE,numero_de_viajes))+
+  geom_line()
+```
