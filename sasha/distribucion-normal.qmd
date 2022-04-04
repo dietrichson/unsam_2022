@@ -12,7 +12,7 @@ library(tidyverse)
 my_data <- read_csv("../data/dat-ab-usos-2022.csv")
 ```
 
-## Eligiendo un dia 
+## Eligiendo un dia
 
 ```{r}
 library(lubridate)
@@ -21,7 +21,7 @@ my_data <- my_data %>%
 ```
 
 ```{r}
-my_data %>% 
+my_data %>%
   ggplot(aes(dia_de_la_semana,fill=dia_de_la_semana,CANTIDAD))+
   geom_bar(stat='identity')
 ```
@@ -33,4 +33,30 @@ my_data %>%
   filter(dia_de_la_semana == "Wed") %>% 
   ggplot(aes(CANTIDAD))+
   geom_histogram()
+```
+
+## Arreglo el análisis
+
+```{r}
+my_data %>% 
+  filter(dia_de_la_semana == "Wed") %>% 
+  group_by(DIA_TRANSPORTE) %>% 
+  summarize(
+    viajeros_por_dia = sum(CANTIDAD)
+  ) %>% 
+  ggplot(aes(viajeros_por_dia))+
+  geom_density()
+```
+
+## Test de Shapiro
+
+```{r}
+my_data %>% 
+  filter(dia_de_la_semana == "Wed") %>% 
+  group_by(DIA_TRANSPORTE) %>% 
+  summarize(
+    viajeros_por_dia = sum(CANTIDAD)
+  ) %>% 
+  pull(viajeros_por_dia) %>% 
+  shapiro.test()
 ```
