@@ -1,0 +1,36 @@
+---
+title: "Distribucion Normal"
+author: "Aleksander Dietrichson"
+format: html
+editor: visual
+---
+
+## Distribucion Normal
+
+```{r}
+library(tidyverse)
+my_data <- read_csv("../data/dat-ab-usos-2022.csv")
+```
+
+## Eligiendo un dia 
+
+```{r}
+library(lubridate)
+my_data <- my_data %>% 
+  mutate(dia_de_la_semana = lubridate::wday(DIA_TRANSPORTE, label=TRUE))
+```
+
+```{r}
+my_data %>% 
+  ggplot(aes(dia_de_la_semana,fill=dia_de_la_semana,CANTIDAD))+
+  geom_bar(stat='identity')
+```
+
+Elijo miécoles
+
+```{r}
+my_data %>% 
+  filter(dia_de_la_semana == "Wed") %>% 
+  ggplot(aes(CANTIDAD))+
+  geom_histogram()
+```
