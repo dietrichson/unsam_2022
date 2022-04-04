@@ -11,7 +11,7 @@ Los Datos provienen de <https://data.buenosaires.gob.ar/dataset/subte-viajes-mol
 
 ```{r}
 library(readr)
-my_data <- read_csv("datadat-ab-usos-2022.csv")
+my_data <- read_csv("data/dat-ab-usos-2022.csv")
 ```
 
 ## Amplitud de los datos
