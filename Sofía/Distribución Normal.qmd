@@ -10,7 +10,7 @@ editor: visual
 
 ```{r}
 library(tidyverse)
-my_data <- read_csv("./data/dat-ab-usos-2022.csv")
+my_data <- read_csv("../data/dat-ab-usos-2022.csv")
 ```
 
 ## Día de la semana
