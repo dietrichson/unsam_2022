@@ -1,0 +1,1 @@
+Esto es un scrip vacío

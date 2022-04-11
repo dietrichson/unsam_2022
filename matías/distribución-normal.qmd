@@ -1,0 +1,69 @@
+---
+title: "distribución-normal"
+author: "sub-matias"
+format: html
+editor: visual
+---
+
+# [Distribución]{.underline} [normal]{.underline}
+
+```{r}
+library(tidyverse)
+my_data <- read_csv("../data/dat-ab-usos-2022.csv")
+```
+
+## [Elección]{.underline} [del]{.underline} [día]{.underline} [de]{.underline} [análisis]{.underline}
+
+En primera instancia, se agrega una columna al archivo de datos (`lubridate / mutate`) tomado con el fin de seleccionar un día de la semana del transporte.
+
+```{r}
+library(lubridate)
+my_data <- my_data %>%
+  mutate(dia_de_la_semana = lubridate::wday(DIA_TRANSPORTE, label = TRUE))
+```
+
+A continuación, se organiza la información en razón del interés de los datos basados en los días de la semana.
+
+```{r}
+my_data %>%
+  ggplot(aes(dia_de_la_semana,fill=dia_de_la_semana, CANTIDAD))+geom_bar(stat = 'identity')
+```
+
+### [Día]{.underline}: [viernes]{.underline}
+
+El motivo de la elección del día reside por conocimientos empíricos y, ahora estadísticos, de que en el día viernes se concibe un mayor nivel de movilización urbana en comparación a otros días de la semana hábil.
+
+A continuación se emplea *`filter`* para seleccionar el día de la semana:
+
+```{r}
+my_data %>%
+  filter(dia_de_la_semana == "Fri") %>%
+  ggplot(aes(CANTIDAD))+
+  geom_histogram()
+```
+
+### [Curva]{.underline} [normal]{.underline}
+
+```{r}
+my_data %>%
+  filter(dia_de_la_semana == "Fri") %>%
+  group_by(DIA_TRANSPORTE) %>%
+  summarize(
+    viajeros_por_dia = sum(CANTIDAD)
+  ) %>%
+  ggplot(aes(viajeros_por_dia))+
+  geom_density()
+```
+
+### [Test]{.underline} [de]{.underline} [Shapiro]{.underline}
+
+```{r}
+my_data %>%
+  filter(dia_de_la_semana == "Fri") %>%
+  group_by(DIA_TRANSPORTE) %>%
+  summarize(
+    viajeros_por_dia = sum(CANTIDAD)
+  ) %>%
+  pull(viajeros_por_dia) %>%
+  shapiro.test()
+```
