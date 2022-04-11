@@ -1,0 +1,30 @@
+---
+title: "Pistas Tareas 2022-04-11"
+author: "Aleksander Dietrichson"
+format: html
+editor: visual
+---
+
+```{r setup, include=FALSE}
+my_data <- read_csv("../data/dat-ab-usos-2022.csv")
+```
+
+## Verificar si los datos los «mismos»
+
+```{r}
+names(my_data)
+```
+
+```{r}
+str(my_data)
+```
+
+## Proponer nombres de columnas
+
+Por ejemplo: DIA_TRANSPORTE
+
+puede confundir
+
+## Describir los datos de las columnas
+
+DIA_TRANSPORTE es una fecha.
