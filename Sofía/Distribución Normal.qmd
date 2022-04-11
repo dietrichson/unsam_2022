@@ -1,0 +1,45 @@
+---
+title: "Distribución Normal"
+format: html
+editor: visual
+---
+
+## 
+
+## Distribución normal
+
+```{r}
+library(tidyverse)
+my_data <- read_csv("./data/dat-ab-usos-2022.csv")
+```
+
+## Día de la semana
+
+```{r}
+library(lubridate)
+my_data <- my_data %>%
+  mutate(dia_de_la_semana = lubridate::wday(DIA_TRANSPORTE,label=TRUE))
+```
+
+```{r}
+my_data %>%
+  ggplot(aes(dia_de_la_semana,fill=dia_de_la_semana, CANTIDAD))+geom_bar(stat = 'identity')
+```
+
+```{r}
+my_data %>% 
+  filter(dia_de_la_semana == "Mon") %>% 
+  ggplot(aes(CANTIDAD))+
+           geom_histogram()
+```
+
+```{r}
+my_data %>% 
+  filter(dia_de_la_semana == "Mon") %>% 
+  group_by(DIA_TRANSPORTE) %>% 
+  summarize(
+    viajeros_por_dia = sum(CANTIDAD)
+  ) %>% 
+  ggplot(aes(viajeros_por_dia))+
+  geom_density()
+```
