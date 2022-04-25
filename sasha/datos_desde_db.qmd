@@ -77,3 +77,22 @@ my_summmary %>%
   scale_y_continuous(labels = scales::comma)
   
 ```
+
+```{r}
+my_summmary %>% 
+  ggplot(aes(x = FECHA, y = pasajeros))+
+  geom_bar(stat='identity')+
+  scale_y_continuous(labels = scales::comma)
+```
+
+## Hipotesis
+
+### Informalmente
+
+Viajan mas pasajeros el lunes que el domingo.
+
+### Definición formal
+
+$H_0$: $pasajeron_{lunes} = pasajeros_{domingo}$
+
+$H_1$: $pasajeron_{lunes} \neq pasajeros_{domingo}$
