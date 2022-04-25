@@ -1,0 +1,79 @@
+---
+title: "Datos en Base de Datos"
+format: html
+editor: visual
+---
+
+## Datos
+
+## Connexión
+
+```{r}
+library(RMariaDB)
+
+con <- dbConnect(
+  RMariaDB::MariaDB(),
+  user = 'unsam',
+  dbname = 'ethergeistprod',
+  password = 'unsam2022',
+  host = 'ethergeist3.cluster-cnofwrjuv43b.us-east-1.rds.amazonaws.com',
+  port = 3306
+  )
+```
+
+## Que tablas hay?
+
+```{r}
+DBI::dbListTables(con)
+```
+
+```{r}
+library(tidyverse)
+tbl(con,"subte_caba")
+```
+
+```{r}
+my_table <- tbl(con,"subte_caba")
+
+my_table %>% 
+  group_by(FECHA) %>% 
+  summarize(
+    pasajeros = sum(pax_TOTAL)
+  )
+```
+
+```{r}
+my_summmary <- 
+  my_table %>% 
+  group_by(FECHA) %>% 
+  summarize(
+    pasajeros = sum(pax_TOTAL)
+  ) %>% 
+  collect()
+```
+
+## Visualizar
+
+```{r}
+my_summmary %>% 
+  ggplot(aes(x = FECHA, y = pasajeros))+
+  geom_line()
+```
+
+```{r}
+library(ggthemes)
+theme_set(theme_economist())
+my_summmary %>% 
+  ggplot(aes(x = FECHA, y = pasajeros))+
+  geom_line()
+
+```
+
+```{r}
+theme_set(theme_fivethirtyeight())
+my_summmary %>% 
+  ggplot(aes(x = FECHA, y = pasajeros))+
+  geom_line()+
+  scale_y_continuous(labels = scales::comma)
+  
+```
