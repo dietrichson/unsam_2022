@@ -89,6 +89,8 @@ my_summmary %>%
 
 Siguiendo la investigación que deseo hacer, tengo un antecedente que demuestra posible realizar análisis de datos con el Subte. Sin embargo, no tengo datos concretos del sistema publicitario en el Subte.
 
-### 2) Análisis de la presencia del mensaje publicitario en el Subte de Buenos Aires
+### 2) Análisis de los patrones de movimiento de los pasajeros / publicidad
 
-*"La zona geográfica de Obelisco es la de mayor actividad publicitaria en el Subte"*
+*a. La estación Pellegrini del Subte B es la zona en la que más combinaciones realizan los pasajeros del Subte.*
+
+*b. "La zona de combinación del Subte en **Obelisco** es la de mayor actividad publicitaria en el Subte" (..)*
