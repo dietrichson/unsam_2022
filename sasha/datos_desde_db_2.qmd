@@ -1,0 +1,115 @@
+---
+title: "Datos en Base de Datos - II"
+date: "2 de may 2022"
+format: html
+editor: visual
+---
+
+## Datos
+
+## Connexión
+
+```{r}
+library(RMariaDB)
+
+con <- dbConnect(
+  RMariaDB::MariaDB(),
+  user = 'unsam',
+  dbname = 'ethergeistprod',
+  password = 'unsam2022',
+  host = 'ethergeist3.cluster-cnofwrjuv43b.us-east-1.rds.amazonaws.com',
+  port = 3306
+  )
+```
+
+## Que tablas hay?
+
+```{r}
+DBI::dbListTables(con)
+```
+
+```{r}
+library(tidyverse)
+tbl(con,"subte_caba")
+```
+
+```{r}
+my_table <- tbl(con,"subte_caba")
+
+
+```
+
+```{r}
+my_summmary <- 
+  my_table %>% 
+  group_by(FECHA) %>% 
+  summarize(
+    pasajeros = sum(pax_TOTAL)
+  ) %>% 
+  collect()
+```
+
+## 
+
+## Hipotesis
+
+$H_0$: lunes = domingo
+
+$H_1:$ Lunes \> domingo.
+
+### La respuesta:
+
+```{r}
+library(lubridate)
+my_summmary %>% 
+  mutate(DIA_DE_LA_SEMANA = wday(FECHA,label = TRUE)) -> my_summary_2
+my_summary_2
+```
+
+```{r}
+my_summary_2 %>% 
+  filter(DIA_DE_LA_SEMANA == "Mon") %>% 
+  pull(pasajeros) %>% 
+  mean()
+```
+
+```{r}
+my_summary_2 %>% 
+  filter(DIA_DE_LA_SEMANA == "Sun") %>% 
+  pull(pasajeros) %>% 
+  mean()
+```
+
+## Con muestra
+
+```{r}
+lunes <- my_summary_2 %>% 
+  filter(DIA_DE_LA_SEMANA == "Mon") %>% 
+  slice_sample(n=20)
+lunes
+```
+
+```{r}
+domingos <- my_summary_2 %>% 
+  filter(DIA_DE_LA_SEMANA == "Sun") %>% 
+  slice_sample(n=25)
+domingos
+```
+
+### Calcular en base a muestras
+
+```{r}
+
+  mean(lunes$pasajeros)
+```
+
+```{r}
+mean(domingos$pasajeros)
+```
+
+```{r}
+t.test(lunes$pasajeros,domingos$pasajeros)
+
+```
+
+Con lo cual rechazamos la $H_0$ y concluimos que viajan mas pasajeros los lunes que los domingos.
