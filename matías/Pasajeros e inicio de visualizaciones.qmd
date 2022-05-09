@@ -19,7 +19,7 @@ con <- dbConnect(
   ) 
 ```
 
-## Tablas
+## Tablas de datos
 
 ```{r}
 DBI::dbListTables(con)
