@@ -85,18 +85,14 @@ my_summmary %>%
 
 ## Hipótesis
 
-### 1) Análisis del mensaje publicitario en el Subte de Buenos Aires
+### 1) Análisis de los patrones de movimiento de los pasajeros / publicidad
 
-Siguiendo la investigación que deseo hacer, tengo un antecedente que demuestra posible realizar análisis de datos con el Subte. Sin embargo, no tengo datos concretos del sistema publicitario en el Subte.
+*La estación Pellegrini del Subte B es la zona en la que más combinaciones realizan los pasajeros del Subte.*
 
-<<<<<<< HEAD
-### 2) Análisis de los patrones de movimiento de los pasajeros / publicidad
+#### Hipótesis alternativa
 
-*a. La estación Pellegrini del Subte B es la zona en la que más combinaciones realizan los pasajeros del Subte.*
+*Hay más combinaciones en la zona geográfica de Obelisco del Subte B que en la zona geográfica de Catedral del Subte D.*
 
-*b. "La zona de combinación del Subte en **Obelisco** es la de mayor actividad publicitaria en el Subte" (..)*
-=======
-### 2) Análisis de la presencia del mensaje publicitario en el Subte de Buenos Aires
+#### Clase
 
-*"La zona geográfica de Obelisco es la de mayor actividad publicitaria en el Subte"*
->>>>>>> 36430480bdf6eb346caff19449464f7002cf087a
+En principio, tenemos todos los datos de la población y no sobre una muestra de datos. Las pruebas estadísticas (leer el CAP7) que se basas en que tenemos una poblacion y sacamos de ella una muestra. Esto es lo tipico para un analisis de datos en la cual no tenes todos los datos, tenes los resultados de una encuesta o algo así.
