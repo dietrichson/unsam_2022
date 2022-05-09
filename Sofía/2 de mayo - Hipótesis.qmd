@@ -1,0 +1,114 @@
+---
+title: "Hipótesis Sofía"
+format: html
+editor: visual
+---
+
+**Datos**
+
+```{r}
+library(RMariaDB)
+con <- dbConnect(
+  RMariaDB::MariaDB(),
+  user = 'unsam',
+  dbname = 'ethergeistprod',
+  password = 'unsam2022',
+  host = 'ethergeist3.cluster-cnofwrjuv43b.us-east-1.rds.amazonaws.com',
+  port = 3306
+  )
+```
+
+```{r}
+DBI::dbListTables(con)
+```
+
+```{r}
+library(tidyverse)
+tbl(con,"subte_caba")
+```
+
+```{r}
+my_table <- tbl(con,"subte_caba")
+
+```
+
+```{r}
+my_table <- tbl(con,"subte_caba")
+my_summmary <- my_table %>% 
+  group_by(FECHA, LINEA) %>% 
+  summarize(
+    pasajeros = sum(pax_TOTAL, na.rm = TRUE)
+  ) %>% 
+  collect()
+```
+
+## Hipótesis
+
+**NULA:** La cantidad de pasajeros que viajan en la Línea B es indistinta al promedio de las otras líneas. El promedio de la Línea B es = al promedio total.
+
+**ALTERNATIVA:** La cantidad de pasajeros que viajan en la Línea B no es indistinta al promedio de las otras líneas. La mayor cantidad de pasajeros del año 2021 viajaron en la Línea B.
+
+\$H_0\$: (LineaA,LineaC,LineaD) = LineaB
+
+\$H_1\$: LineaB \\\> (LineaA,LineaC, LineaD)
+
+```{r}
+LineaB <-
+  my_summmary %>%
+  ungroup() %>%
+  filter(LINEA == "LineaB") %>% 
+  slice_sample(n=12)
+```
+
+```{r}
+LineaNoB <-
+  my_summmary %>%
+  ungroup() %>%
+  filter(LINEA != "LineaB") %>%
+  slice_sample(n=12)
+```
+
+```{r}
+mean(LineaB$pasajeros)
+```
+
+```{r}
+LineaC <-
+  my_summmary %>%
+  ungroup() %>%
+  filter(LINEA == "LineaC") %>% 
+  slice_sample(n=12)
+
+```
+
+```{r}
+mean(LineaC$pasajeros)
+```
+
+```{r}
+LineaD <-
+  my_summmary %>%
+  ungroup() %>%
+  filter(LINEA == "LineaD") %>% 
+  slice_sample(n=12)
+```
+
+```{r}
+mean(LineaD$pasajeros)
+```
+
+```{r}
+LineaA <-
+  my_summmary %>%
+  ungroup() %>%
+  filter(LINEA == "LineaA") %>% 
+  slice_sample(n=12)
+```
+
+```{r}
+mean(LineaA$pasajeros)
+```
+
+```{r}
+t.test(LineaNoB$pasajeros,LineaB$pasajeros)
+```
