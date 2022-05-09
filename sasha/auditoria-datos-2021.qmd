@@ -1,0 +1,23 @@
+---
+title: "Auditoria Datos 2021"
+format: html
+editor: visual
+---
+
+## Datos
+
+Bajamos datos provenientes de
+
+https://cdn.buenosaires.gob.ar/datosabiertos/datasets/sbase/subte-viajes-molinetes/molinetes-2021.zip
+
+contiene un solo archivo historico_2021.csv
+
+## Propósito
+
+Averiguar si los datos son compatibles con los existentes.
+
+```{r}
+library(readr)
+my_data <- read_csv(here::here("data","dat-ab-usos-2022.csv"))
+my_data2 <- read_csv(here::here("data","historico_2021.csv"))
+```
