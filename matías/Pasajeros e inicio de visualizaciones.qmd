@@ -1,0 +1,98 @@
+---
+title: "Análisis de datos_25_Abril"
+author: "Matías Salto"
+format: html
+editor: visual
+---
+
+```{r}
+
+library(RMariaDB)
+
+con <- dbConnect(
+  RMariaDB::MariaDB(),
+  user = 'unsam',
+  dbname = 'ethergeistprod',
+  password = 'unsam2022',
+  host = 'ethergeist3.cluster-cnofwrjuv43b.us-east-1.rds.amazonaws.com',
+  port = 3306
+  ) 
+```
+
+## Tablas
+
+```{r}
+DBI::dbListTables(con)
+```
+
+```{r}
+library(tidyverse)
+tbl(con,"subte_caba")
+```
+
+```{r}
+my_table <- tbl(con,"subte_caba")
+
+my_table %>%
+  filter(LINEA =="LineaB") %>%
+  group_by(FECHA) %>%
+  summarize(
+    pasajeros = sum(pax_pagos)
+  )
+```
+
+```{r}
+my_summmary <- 
+  my_table %>%
+  filter(LINEA =="LineaB") %>%
+  group_by(FECHA) %>% 
+  summarize(
+    pasajeros = sum(pax_pagos)
+  ) %>% 
+  collect()
+```
+
+## Visualizador
+
+```{r}
+my_summmary %>% 
+  ggplot(aes(x = FECHA, y = pasajeros))+
+  geom_line()
+```
+
+```{r}
+library(ggthemes)
+theme_set(theme_hc())
+my_summmary %>%
+  ggplot(aes(x = FECHA, y = pasajeros))+
+  geom_line()
+```
+
+```{r}
+theme_set(theme_hc())
+my_summmary %>% 
+  ggplot(aes(x = FECHA, y = pasajeros))+
+  geom_line()+
+  scale_y_continuous(labels = scales::comma)
+```
+
+```{r}
+my_summmary %>%
+  ggplot(aes(x = FECHA, y = pasajeros))+
+  geom_bar(stat='identity')+
+  scale_y_continuous(labels = scales::comma)
+```
+
+## Hipótesis
+
+### 1) Análisis de los patrones de movimiento de los pasajeros / publicidad
+
+*La estación Pellegrini del Subte B es la zona en la que más combinaciones realizan los pasajeros del Subte.*
+
+#### Hipótesis alternativa
+
+*Hay más combinaciones en la zona geográfica de Obelisco del Subte B que en la zona geográfica de Catedral del Subte D.*
+
+#### Clase
+
+En principio, tenemos todos los datos de la población y no sobre una muestra de datos. Las pruebas estadísticas (leer el CAP7) que se basas en que tenemos una poblacion y sacamos de ella una muestra. Esto es lo tipico para un analisis de datos en la cual no tenes todos los datos, tenes los resultados de una encuesta o algo así.
