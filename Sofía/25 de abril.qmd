@@ -1,0 +1,68 @@
+```{r}
+library(RMariaDB)
+
+con <- dbConnect(
+  RMariaDB::MariaDB(),
+  user = 'unsam',
+  dbname ='ethergeistprod',
+  password = 'unsam2022',
+  host ='ethergeist3.cluster-cnofwrjuv43b.us-east-1.rds.amazonaws.com',
+  port = 3306
+  )
+```
+
+```{r}
+DBI::dbListTables(con) 
+```
+
+```{r}
+library(tidyverse)
+tbl(con,"subte_caba")
+```
+
+```{r}
+my_table <-tbl(con,"subte_caba")
+
+my_table %>%
+  filter(LINEA =="LineaA") %>%
+  group_by(FECHA) %>%
+  summarize(
+    pasajeros = sum(pax_TOTAL)
+  )
+```
+
+
+```{r}
+my_summmary <-
+my_table %>% 
+  filter(LINEA =="LineaA",ESTACION == "Flores") %>%
+  group_by(FECHA) %>%
+  summarize(
+    pasajeros = sum(pax_TOTAL) 
+    ) %>%
+      collect() 
+``` 
+
+
+```{r}
+library(ggthemes)
+theme_set(theme_economist())
+my_summmary %>%
+  ggplot(aes(x = FECHA, y = pasajeros))+
+  geom_line()
+
+```
+
+
+
+```{r}
+theme_set(theme_fivethirtyeight())
+my_summmary %>%
+  ggplot(aes(x = FECHA, y = pasajeros))+
+  geom_line()+
+  scale_y_continuous(labels = scales::comma)
+
+```
+HIPÓTESIS NULA: La cantidad de pasajeros que viajan en la Línea B es indistinta al promedio de las otras líneas. El promedio de la Línea B es = al promedio total.
+
+HIPÓTESIS ALTERNATIVA: La cantidad de pasajeros que viajan en la Línea B no es indistinta al promedio de las otras líneas. La mayor cantidad de pasajeros del año 2021 viajaron en la Línea B. 
