@@ -1,0 +1,90 @@
+---
+title: "Análisis de datos_25_Abril"
+author: "Matías Salto"
+format: html
+editor: visual
+---
+
+```{r}
+
+library(RMariaDB)
+
+con <- dbConnect(
+  RMariaDB::MariaDB(),
+  user = 'unsam',
+  dbname = 'ethergeistprod',
+  password = 'unsam2022',
+  host = 'ethergeist3.cluster-cnofwrjuv43b.us-east-1.rds.amazonaws.com',
+  port = 3306
+  ) 
+```
+
+## Tablas de datos
+
+```{r}
+DBI::dbListTables(con)
+```
+
+```{r}
+library(tidyverse)
+tbl(con,"subte_caba")
+```
+
+```{r}
+my_table <- tbl(con,"subte_caba")
+
+my_table %>%
+  filter(LINEA =="LineaB") %>%
+  group_by(FECHA) %>%
+  summarize(
+    pasajeros = sum(pax_pagos)
+  )
+```
+
+```{r}
+my_summmary <- 
+  my_table %>%
+  filter(LINEA =="LineaB") %>%
+  group_by(FECHA) %>% 
+  summarize(
+    pasajeros = sum(pax_pagos)
+  ) %>% 
+  collect()
+```
+
+## Visualizador
+
+```{r}
+my_summmary %>% 
+  ggplot(aes(x = FECHA, y = pasajeros))+
+  geom_line()
+```
+
+```{r}
+library(ggthemes)
+theme_set(theme_hc())
+my_summmary %>%
+  ggplot(aes(x = FECHA, y = pasajeros))+
+  geom_line()
+```
+
+```{r}
+theme_set(theme_hc())
+my_summmary %>% 
+  ggplot(aes(x = FECHA, y = pasajeros))+
+  geom_line()+
+  scale_y_continuous(labels = scales::comma)
+```
+
+```{r}
+my_summmary %>%
+  ggplot(aes(x = FECHA, y = pasajeros))+
+  geom_bar(stat='identity')+
+  scale_y_continuous(labels = scales::comma)
+```
+
+## Planteo inicial de hipótesis
+
+$H_0$ Corrientes es la estación que más pasajeros realizan combinación en la Línea
+
+$H_1$ Corrientes (Subte B) \> Humberto 1° (Línea E) / Once (Línea A) / Santa Fe (Línea D)
