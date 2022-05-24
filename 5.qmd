@@ -1,0 +1,101 @@
+---
+title: "Titanic 24/5"
+format: html
+editor: visual
+---
+
+```{r}
+#| include: false
+library(tidyverse)
+data("Titanic")
+```
+
+```{r}
+#| echo: false
+#| fig.cap: "Test Plot"
+#| label: fig-test
+Titanic %>% 
+  as.data.frame() %>%
+  group_by(Survived, Sex) %>% 
+  summarize(
+    Freq = sum(Freq),
+    .groups = "drop"
+  ) %>% 
+  ggplot(aes(x = Sex, y = Freq, fill=Survived))+
+  geom_col() # geom_col es lo mismo que geom_bar(stat='identity')
+```
+
+Como vemos en gráfico, parece haber un patrón definido.
+
+```{r}
+Titanic %>%
+  as.data.frame() %>%
+  group_by(Survived,Sex) %>%
+  summarize(
+    Freq = sum(Freq)
+    ,
+    .groups = "drop"
+  ) %>%
+  knitr::kable(caption="Tabla de Supervivencia {#tbl-test}")
+```
+
+Seguimos viendo un patrón definido.
+
+```{r}
+Titanic %>%
+  as.data.frame() %>%
+  group_by(Survived,Sex) %>%
+  summarize(
+    Freq = sum(Freq)
+    ,
+    .groups = "drop"
+  ) %>%
+  pivot_wider(names_from = Sex, values_from=Freq) %>%
+  knitr::kable(caption="Otra tabla de supervivencia {#tbl-otra}")
+```
+
+## Hypotesis
+
+$H_0$: Hay patrón detectable.
+
+$H_1$ : En proporción de pasajeros, sobrevivieron menos hombres que mujeres.
+
+```{r}
+Titanic %>%
+  as.data.frame() %>%
+  group_by(Survived, Sex) %>%
+  summarize(
+    Freq = sum(Freq)
+    ,
+    .groups = "drop"
+  ) %>%
+  pivot_wider(names_from = Sex, values_from=Freq) -> tmp
+```
+
+```{r}
+M <- as.table(
+  rbind(c(1364  ,  126),
+        c(1731,   470))
+)
+
+chisq.test(M)
+```
+
+```{r}
+tmp %>%
+  select(Male,Female) %>%
+  chisq.test()
+```
+
+```{r}
+tmp[,2:3] %>%
+  chisq.test()
+```
+
+```{r}
+tmp %>%
+  select(Male,Female) %>%
+  chisq.test() %>%
+  broom::tidy() %>%
+  knitr::kable(caption = "Resultado {#tbl-chi}")
+```
