@@ -1,0 +1,118 @@
+---
+title: "Notas 24 de mayo"
+format: html
+editor: visual
+---
+
+```{r setup}
+#| include: false
+library(tidyverse)
+data("Titanic")
+
+```
+
+## Plots
+
+```{r primer-plot}
+#| echo: false
+#| fig.cap: "Test Plot"
+#| label: fig-test
+
+Titanic %>% 
+  as.data.frame() %>%
+  group_by(Age, Sex) %>% 
+  summarize(
+    Freq = sum(Freq),
+    .groups = "drop"
+  ) %>% 
+  ggplot(aes(x = Sex, y = Freq, fill=Age))+
+  geom_col() # geom_col es lo mismo que geom_bar(stat='identity')
+
+
+```
+
+Como vemos en @fig-test no parece haber un patrón definido.
+
+```{r}
+#| echo: false
+
+Titanic %>% 
+  as.data.frame() %>%
+  group_by(Age, Sex) %>% 
+  summarize(
+    Freq = sum(Freq)
+    ,
+    .groups = "drop"
+  ) %>% 
+  knitr::kable(caption="Tabla de Pasajeros {#tbl-test}")
+```
+
+En @tbl-test vemos la distribución.
+
+```{r}
+#| echo: false
+
+Titanic %>% 
+  as.data.frame() %>%
+  group_by(Age, Sex) %>% 
+  summarize(
+    Freq = sum(Freq)
+    ,
+    .groups = "drop"
+  ) %>% 
+  pivot_wider(names_from = Sex, values_from=Freq) %>% 
+  knitr::kable(caption="Otra tabla de pasajeros {#tbl-otra}")
+```
+
+En @tbl-otra vemos la misma información de otra manera.
+
+## Hypotesis
+
+$H_0$ : No hay patrón detectable
+
+$H_1$ : Viajaron proporcionalmente más niñas.
+
+```{r chi-cuadrado}
+Titanic %>% 
+  as.data.frame() %>%
+  group_by(Age, Sex) %>% 
+  summarize(
+    Freq = sum(Freq)
+    ,
+    .groups = "drop"
+  ) %>% 
+  pivot_wider(names_from = Sex, values_from=Freq) -> tmp
+
+# Esto es «a mano»
+M <- as.table(
+  rbind(c(64  ,   45), 
+        c(1667 ,   425))
+  )
+
+chisq.test(M)
+
+```
+
+```{r}
+# Usando la variable tmp que definí selecciono las columnas que me interesan
+
+tmp %>% 
+  select(Male,Female) %>% 
+  chisq.test()
+```
+
+```{r}
+tmp[,2:3] %>% 
+  chisq.test()
+```
+
+```{r}
+#! echo: false
+tmp %>% 
+  select(Male,Female) %>% 
+  chisq.test() %>% 
+  broom::tidy() %>% 
+  knitr::kable(caption = "Resultado del test de «ji cuadrado» {#tbl-chi}")
+```
+
+Según los resultados desplegados en la @tbl-chi
