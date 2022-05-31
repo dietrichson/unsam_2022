@@ -1,0 +1,83 @@
+---
+title: "Notas 29 de mayo 2022"
+author: "Aleksander Dietrichson"
+format: html
+editor: visual
+---
+
+## Visualizar Correlaciones
+
+```{r}
+library(tidyverse, quietly = TRUE, warn.conflicts = FALSE )
+
+iris %>% 
+  ggplot(aes(Sepal.Length,Sepal.Width))+
+  geom_point()
+  
+```
+
+```{r}
+iris %>% 
+  ggplot(aes(Sepal.Length,Sepal.Width))+
+  geom_point()+
+  geom_smooth()
+```
+
+```{r}
+iris %>% 
+  ggplot(aes(Petal.Length,Petal.Width))+
+  geom_point()+
+  geom_smooth()
+```
+
+```{r}
+iris %>% 
+  ggplot(aes(Petal.Length,Petal.Width))+
+  geom_point()+
+  geom_smooth(method = "lm") #lm = linear model
+```
+
+## Calcular e interpretar correlaciones
+
+```{r}
+cor(iris$Petal.Length,iris$Petal.Width)
+```
+
+```{r}
+cor.test(iris$Petal.Width, iris$Sepal.Length)
+```
+
+## Cargar datos desde una URL
+
+Fuente: https://gist.github.com/dietrichson/f76423eb99bbef6768d2f83e130efcd0
+
+```{r}
+library(tidyverse,quietly = TRUE, warn.conflicts = FALSE)
+
+my_filename <- "https://gist.github.com/dietrichson/f76423eb99bbef6768d2f83e130efcd0/raw/6907bb3a38bfbb6fccf3a8b1edfb90e39714d14f/titanic_dataset.csv"
+
+my_data <- read_csv(my_filename)
+
+```
+
+Es posible, pero no necesario, guardar una copia «local».
+
+```{r}
+my_data %>% 
+  ggplot(aes(Age,Survived))+
+  geom_point()+
+  geom_smooth()+
+  geom_smooth(method = "lm")
+```
+
+```{r}
+cor.test(my_data$Survived,my_data$Age)
+```
+
+## Consigna
+
+Usar el conjunto de datos "trees"
+
+-   Visualizar correlaciones entre 2 combinaciones
+
+-   Calcular las correlaciones visualizadas e interpretar.
