@@ -1,0 +1,59 @@
+---
+title: "Notas de la clase"
+date: "9 de may 2022"
+format: html
+editor: visual
+---
+
+## Datos
+
+## Connexión
+
+```{r}
+library(RMariaDB)
+library(tidyverse)
+con <- dbConnect(
+  RMariaDB::MariaDB(),
+  user = 'unsam',
+  dbname = 'ethergeistprod',
+  password = 'unsam2022',
+  host = 'ethergeist3.cluster-cnofwrjuv43b.us-east-1.rds.amazonaws.com',
+  port = 3306
+  )
+```
+
+
+$H_0$ : Linea B = promedio de Otras
+
+$H_1$ : Linea B $\neq$ Otras
+
+Uno mas uno es igual a dos
+
+1+1=2
+
+```{r}
+my_table <- tbl(con,"subte_caba")
+my_summary <- my_table %>% 
+  group_by(FECHA, LINEA) %>% 
+  summarize(
+    pasajeros = sum(pax_TOTAL, na.rm = TRUE)
+    ) %>% 
+  collect()
+```
+```{r}
+lineaB <-
+  my_summary %>% 
+  ungroup() %>% 
+  filter(LINEA == "LineaB") %>% 
+  slice_sample(n=20)
+```
+
+
+```{r}
+lineaNoB <-
+  my_summary %>% 
+  ungroup() %>% 
+  filter(LINEA != "LineaB") %>% 
+  slice_sample(n=20)
+```
+
