@@ -1,0 +1,76 @@
+---
+title: "Correlaciones-Sofía"
+format: html
+editor: visual
+---
+
+## Análisis de correlaciones respecto a "Trees"
+
+-   **Entre Girth y Height:**
+
+    ```{r}
+    library(tidyverse)
+    trees %>% 
+      ggplot(aes(Girth,Height))+
+      geom_point()+
+      geom_smooth()
+    ```
+
+Los puntos se encuentran cada vez más cerca de la línea.
+
+-   Método Lineal:
+
+    ```{r}
+    trees %>% 
+      ggplot(aes(Girth,Height))+
+      geom_point()+
+      geom_smooth()+
+      geom_smooth(method = "lm")
+    ```
+
+Se puede observar que la correlación entre las variables es media.
+
+-   Test Estadístico:
+
+```{r}
+cor(trees$Girth,trees$Height)
+```
+
+```{r}
+cor.test(trees$Girth,trees$Height)
+```
+
+En base a los valores dados, se puede concluir en que no hay gran correlación entre Girth y Height.
+
+**Entre Girth y Volume:**
+
+```{r}
+trees %>%
+ggplot(aes(Girth,Volume))+
+  geom_point()+
+  geom_smooth()
+```
+
+-   Método Lineal:
+
+```{r}
+trees %>% 
+  ggplot(aes(Girth,Volume))+
+  geom_point()+
+  geom_smooth()+
+  geom_smooth(method = "lm")
+```
+
+Se puede observar una amplia correlación entre las variables.
+
+-   Test Estadístico:
+
+```{r}
+cor(trees$Girth,trees$Volume)
+```
+
+```{r}
+cor.test(trees$Girth,trees$Volume)
+```
+
+En base a los valores dados, se puede concluir en que existe una correlación significativa entre Girth y Volume.
