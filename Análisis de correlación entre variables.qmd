@@ -1,0 +1,139 @@
+---
+title: "Clase 3105"
+author: "Matías S"
+format: html
+editor: visual
+---
+
+## Clase sobre correlaciones y funciones de visualización
+
+```{r}
+
+library(tidyverse,quietly = TRUE, warn.conflicts = FALSE)
+my_filename <- "https://gist.github.com/dietrichson/f76423eb99bbef6768d2f83e130efcd0/raw/6907bb3a38bfbb6fccf3a8b1edfb90e39714d14f/titanic_dataset.csv"
+my_data <- read_csv(my_filename)
+```
+
+```{r}
+library(tidyverse)
+iris %>% 
+  ggplot(aes(Sepal.Length,Sepal.Width))+
+  geom_point()
+
+# Por sobre la base de datos, el primer paso para comprender las [correlaciones] es visualizarlas.
+```
+
+```{r}
+iris %>% 
+  ggplot(aes(Sepal.Length,Sepal.Width))+
+  geom_point()+
+  geom_smooth()
+```
+
+```{r}
+iris %>% 
+  ggplot(aes(Petal.Length,Petal.Width))+
+  geom_point()+
+  geom_smooth()
+```
+
+```{r}
+my_data %>% 
+  ggplot(aes(Age,Survived))+ #Por sobre la base de datos se toman las variables / columnas de info de edad y supervivencia
+  geom_point()+
+  geom_smooth()+ #Geom_Smooth es un algoritmo que calcula una incinación en c/u de los puntos de la curva, pero dandole mas peso a los puntos que están más cerca y viceversa en el caso opuesto.
+  geom_smooth(method = "lm") #lm = modelo lineal
+```
+
+```{r}
+cor.test(my_data$Survived,my_data$Age)
+```
+
+## Análisis de correlaciones por sobre `trees`
+
+1.  *Visualizar correlaciones entre dos combinaciones*
+2.  *Calcular las correlaciones visualizadas e interpretar*
+
+-   Cálculo por sobre `Girth` (circuferencia) y `Height`
+
+-   Cálculo por sobre `Girth` y `Volume`
+
+## Cálculo por sobre `Girth` y `Height`
+
+```{r}
+trees %>% 
+  ggplot(aes(Girth,Height))+
+  geom_point()+
+  geom_smooth()
+```
+
+Cada una de las observaciones demostradas en el gráficos se encuentran relativamente cerca de la línea, la cual se construye desde una inclinación cuyo resultado es la menor distancia entre cada uno de los puntos y la línea en si.
+
+En el siguiente gráfico se aplica el método lineal
+
+```{r}
+trees %>% 
+  ggplot(aes(Girth,Height))+
+  geom_point()+
+  geom_smooth()+
+  geom_smooth(method = "lm")
+```
+
+### Número de correlación entre variables
+
+La posible interpretación es que la circunferencia y la altura poseen una correlación media entre si.
+
+```{r}
+cor(trees$Girth,trees$Height)
+```
+
+Para poder continuar con el análisis, se hace un test estadístico:
+
+```{r}
+cor.test(trees$Girth,trees$Height)
+```
+
+Nos da un valor P que es 0 y un intervalo de confianza del 20 al 73. Asimismo, podemos ver un valor t de 3.2722.
+
+### Posible interpretación de los datos obtenidos
+
+En este caso, es factible inferir que no existe una correlación estadísticamente significativa entre las dos variables de este caso.
+
+## Cálculo por sobre `Girth` y `Volume`
+
+```{r}
+trees %>% 
+  ggplot(aes(Girth,Volume))+
+  geom_point()+
+  geom_smooth()
+```
+
+```{r}
+trees %>% 
+  ggplot(aes(Girth,Volume))+
+  geom_point()+
+  geom_smooth()+
+  geom_smooth(method = "lm")
+```
+
+### Número de correlación entre variables
+
+En contraste con el análisis de correlación de variables anterior, (un valor estadístico que posiblemente se puede interpretar de correlación media \[0.51\]), este valor de correlación es relativamente alto.
+
+```{r}
+cor(trees$Girth,trees$Volume)
+```
+
+Es posible interpretar que la circunferencia y el volumen poseen una fuerte de correlación de si.
+
+```{r}
+cor.test(trees$Girth,trees$Volume)
+```
+
+El análisis estadístico nos otorga un valor P que es 0 y un alto intervalo de confianza de 93 a 98. Podemos ver un valor T de 20.478.
+
+### Posible interpretación de los datos obtenidos
+
+En este caso, es factible inferir que existe una correlación estadísticamente significativa entre las variables.
+
+### 
