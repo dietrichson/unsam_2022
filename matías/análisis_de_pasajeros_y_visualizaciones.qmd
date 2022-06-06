@@ -1,0 +1,102 @@
+---
+title: "Análisis de datos_25_Abril"
+format: html
+editor: visual
+---
+
+## Comienzo de análisis
+
+```{r}
+library(RMariaDB)
+
+con <- dbConnect(
+  RMariaDB::MariaDB(),
+  user = 'unsam',
+  dbname = 'ethergeistprod',
+  password = 'unsam2022',
+  host = 'ethergeist3.cluster-cnofwrjuv43b.us-east-1.rds.amazonaws.com',
+  port = 3306
+  ) 
+```
+
+## Tablas
+
+```{r}
+DBI::dbListTables(con)
+```
+
+```{r}
+library(tidyverse)
+tbl(con,"subte_caba")
+```
+
+```{r}
+my_table <- tbl(con,"subte_caba")
+
+my_table %>%
+  filter(LINEA =="LineaB") %>%
+  group_by(FECHA) %>%
+  summarize(
+    pasajeros = sum(pax_pagos)
+  )
+```
+
+```{r}
+my_summmary <- 
+  my_table %>%
+  filter(LINEA =="LineaB") %>%
+  group_by(FECHA) %>% 
+  summarize(
+    pasajeros = sum(pax_pagos)
+  ) %>% 
+  collect()
+```
+
+## Visualizador
+
+```{r}
+my_summmary %>% 
+  ggplot(aes(x = FECHA, y = pasajeros))+
+  geom_line()
+```
+
+```{r}
+library(ggthemes)
+theme_set(theme_hc())
+my_summmary %>%
+  ggplot(aes(x = FECHA, y = pasajeros))+
+  geom_line()
+```
+
+```{r}
+theme_set(theme_hc())
+my_summmary %>% 
+  ggplot(aes(x = FECHA, y = pasajeros))+
+  geom_line()+
+  scale_y_continuous(labels = scales::comma)
+```
+
+```{r}
+my_summmary %>%
+  ggplot(aes(x = FECHA, y = pasajeros))+
+  geom_bar(stat='identity')+
+  scale_y_continuous(labels = scales::comma)
+```
+
+## Hipótesis
+
+### 1) Análisis del mensaje publicitario en el Subte de Buenos Aires
+
+Siguiendo la investigación que deseo hacer, tengo un antecedente que demuestra posible realizar análisis de datos con el Subte. Sin embargo, no tengo datos concretos del sistema publicitario en el Subte.
+
+<<<<<<< HEAD
+### 2) Análisis de los patrones de movimiento de los pasajeros / publicidad
+
+*a. La estación Pellegrini del Subte B es la zona en la que más combinaciones realizan los pasajeros del Subte.*
+
+*b. "La zona de combinación del Subte en **Obelisco** es la de mayor actividad publicitaria en el Subte" (..)*
+=======
+### 2) Análisis de la presencia del mensaje publicitario en el Subte de Buenos Aires
+
+*"La zona geográfica de Obelisco es la de mayor actividad publicitaria en el Subte"*
+>>>>>>> 36430480bdf6eb346caff19449464f7002cf087a

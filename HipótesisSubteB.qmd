@@ -1,0 +1,114 @@
+---
+title: "Hipótesis Subte B"
+author: "Matías"
+format: html
+editor: visual
+---
+
+## Conexión a la base de datos
+
+```{r}
+#| include:false
+library(RMariaDB)
+con <- dbConnect(
+  RMariaDB::MariaDB(),
+  user = 'unsam',
+  dbname = 'ethergeistprod',
+  password = 'unsam2022',
+  host = 'ethergeist3.cluster-cnofwrjuv43b.us-east-1.rds.amazonaws.com',
+  port = 3306
+  )
+```
+
+```{r}
+#| include:false
+DBI::dbListTables(con)
+```
+
+```{r}
+#| include:false
+library(tidyverse)
+
+tbl(con,"subte_caba")
+```
+
+```{r}
+#| include: false
+library(tidyverse)
+
+my_table <- tbl(con,"subte_caba")
+```
+
+## Hipótesis
+
+$H_0$ Los transeúntes en la Ciudad de Buenos Aires utilizan el Subte B mayormente los viernes en contraste a los sábados durante el horario laboral.
+
+$H_1$ Viernes \> Sábados
+
+### Investigación de datos
+
+```{r}
+#| echo:false
+
+SubteDatos <-
+  my_table %>%
+  group_by(LINEA,DESDE,HASTA,WDAY) %>%
+  summarize(
+    pasajeros = sum(pax_TOTAL, na.rm = TRUE)
+  ) %>%
+  collect()
+```
+
+```{r}
+# En este apartado agrupo todas las líneas con sus horarios completos para luego sumar la cantidad total de pasajeros. Se crea "HorariosCompletos" para agrupar todo esto en un mismo dato.
+
+HorariosCompletos <- my_table %>%
+  group_by(LINEA, ESTACION, DESDE, HASTA, WDAY) %>%
+  summarise(
+    pasajeros = sum(pax_TOTAL, na.rm = TRUE)
+  ) %>%
+  ungroup () %>%
+  collect()
+```
+
+```{r}
+# Comienzo a discriminar los datos. Sé que se puede hacer en el paso anterior, pero por ahora lo hago de esta forma (entre distintos cuadros de diálogo con la intención de tener todo más separado)
+
+HorariosCompletos %>%
+  filter(LINEA=="LineaB") %>%
+  group_by(ESTACION, DESDE, HASTA, WDAY) %>%
+  summarize(
+    pasajeros = sum(pasajeros, na.rm = TRUE)
+  ) -> SubteB
+
+# No hago collect porque estoy conectado al resumen que ya sacamos
+# Por alguna razón no me toma el HASTA, solo el DESDE en el comentario debajo aunque luego me lo muestra en la creación de la agrupación de datos (?)
+# Puede ser un problema, pero en razón de que estoy tomando la variable de HORARIO (que se divide cada 15min de uso del Subte) tengo una misma estación dividida cada 15min
+# Por ejemplo, tengo a la estación ANGEL GALLARDO unas 74 veces
+```
+
+```{r}
+# Siguiendo el ejemplo de ANGEL GALLARDO, solo me interesa desde el horario laboral. ¿Cómo puedo recortar ese uso horario?
+```
+
+### Promedio de uso Subte B entre viernes y sábado
+
+```{r}
+# Desconozco si es el paso correcto a seguir, pero el interés de la hipótesis plantea un análisis de promedio de pasajeros entre los días viernes y sábado DURANTE el horario laboral de 09:00 AM a 16:00 PM
+
+SubteDatos %>%
+  filter(LINEA == "LineaB") %>%
+  group_by(WDAY == "Fri") %>%
+  pull(pasajeros) %>%
+  mean()
+```
+
+```{r}
+#Salió mal, da el mismo promedio
+
+SubteDatos %>%
+  filter(LINEA == "LineaB") %>%
+  group_by(WDAY == "Sat") %>%
+  pull(pasajeros) %>%
+  mean()
+```

@@ -1,0 +1,116 @@
+---
+title: "Hipótesis"
+author: "Matías S"
+format: html
+editor: visual
+---
+
+## Datos
+
+### Conexión
+
+```{r}
+#| include: false
+library(RMariaDB)
+con <- dbConnect(
+  RMariaDB::MariaDB(),
+  user = 'unsam',
+  dbname = 'ethergeistprod',
+  password = 'unsam2022',
+  host = 'ethergeist3.cluster-cnofwrjuv43b.us-east-1.rds.amazonaws.com',
+  port = 3306
+  )
+```
+
+```{r}
+#| include: false
+library(tidyverse)
+
+my_table <- tbl(con,"subte_caba")
+```
+
+## Planteo inicial de hipótesis
+
+$H_0$ Corrientes es la estación que más pasajeros realizan combinación en la Línea H
+
+$H_1$ Corrientes (con Línea B) \> Humberto 1° (con Línea E) / Once (con Línea A) / Santa Fe (con Línea D)
+
+Un horario de trabajo 09:00 a 16:00 / En una sola Línea B / Tomar el promedio del finde y ver la diferencia con el día de la semana (quitando lunes y viernes) Tomar una estimación de cuántos trabajan tomando el Subte.
+
+### Bases de datos e hipótesis
+
+```{r}
+#| echo: false
+my_summmary <-
+  my_table %>%
+  group_by(LINEA) %>%
+  summarize(
+    pasajeros = sum(pax_TOTAL, na.rm = TRUE)
+  ) %>%
+  collect()
+```
+
+```{r}
+
+my_summary <- my_table %>%
+  group_by(LINEA, ESTACION) %>%
+  summarise(
+    pasajeros = sum(pax_TOTAL, na.rm = TRUE)
+  ) %>%
+  ungroup () %>%
+  collect()
+```
+
+#### Promedio de pasajeros Subte Línea H
+
+```{r}
+my_summmary %>%
+  filter(LINEA == "LineaH") %>%
+  pull (pasajeros) %>%
+  mean()
+```
+
+```{r}
+my_summary %>% 
+  filter(ESTACION == "Corrientes") %>% 
+  pull(pasajeros) %>% 
+  mean ()
+
+```
+
+```{}
+```
+
+```{r}
+my_summary %>% 
+  filter(ESTACION == "Once")
+```
+
+## Otro group_by
+
+```{r}
+my_summary %>% 
+  filter(LINEA=="LineaH") %>% 
+  group_by(ESTACION) %>% 
+  summarize(
+    pasajeros = sum(pasajeros, na.rm = TRUE)
+  ) -> my_summary2
+```
+
+```{r}
+my_summary2 %>% 
+  knitr::kable(caption = "Numero de pasajeros en la linea H")
+```
+
+```{r}
+#| echo: false
+#| fig-cap: "Número de Pasajerons en linea H"
+#| label: figura
+
+library(ggthemes)
+theme_set(theme_economist())
+my_summary2 %>% 
+  ggplot(aes(ESTACION,pasajeros))+
+  geom_bar(stat = "identity")+
+  coord_flip()
+```
