@@ -1,0 +1,56 @@
+---
+title: "Notas de la clase"
+date: "9 de may 2022"
+format: html
+editor: visual
+---
+
+## Datos
+
+## Connexión
+
+```{r}
+library(RMariaDB)
+
+con <- dbConnect(
+  RMariaDB::MariaDB(),
+  user = 'unsam',
+  dbname = 'ethergeistprod',
+  password = 'unsam2022',
+  host = 'ethergeist3.cluster-cnofwrjuv43b.us-east-1.rds.amazonaws.com',
+  port = 3306
+  )
+```
+
+## Resumen por hora del día
+
+```{r}
+library(tidyverse)
+my_table <- tbl(con,"subte_caba")
+
+```
+
+```{r}
+resumen_por_horario <- my_table %>% 
+  group_by(DESDE) %>% 
+  summarize(
+    pasajeros = sum(pax_TOTAL,na.rm = TRUE)
+  ) %>% 
+  collect()
+```
+
+```{r}
+resumen_por_horario %>% 
+  ggplot(aes(DESDE,pasajeros)) + 
+  geom_bar(stat = 'identity')
+```
+
+```{r}
+last_plot()+
+  geom_smooth()
+```
+
+```{r}
+last_plot()+
+  geom_smooth(method = "lm", color = "red")
+```
