@@ -1,0 +1,78 @@
+---
+title: "Notas 15 de junio 2022"
+author: "Aleksander Dietrichson"
+format: html
+editor: visual
+---
+
+## Modelos estadísticos II (con glm)
+
+```{r}
+library(tidyverse, quietly = TRUE, warn.conflicts = FALSE )
+
+my_model1 <- lm(Sepal.Length ~ Sepal.Width , data = iris)
+
+my_model2 <- glm(Sepal.Length ~ Sepal.Width , data = iris)
+
+```
+
+### lm
+```{r}
+summary(my_model1)
+```
+
+
+### gml
+
+```{r}
+summary(my_model2)
+```
+
+
+## Datos del Titánic
+
+Fuente: https://gist.github.com/dietrichson/f76423eb99bbef6768d2f83e130efcd0
+
+```{r}
+library(tidyverse,quietly = TRUE, warn.conflicts = FALSE)
+
+my_filename <- "https://gist.github.com/dietrichson/f76423eb99bbef6768d2f83e130efcd0/raw/6907bb3a38bfbb6fccf3a8b1edfb90e39714d14f/titanic_dataset.csv"
+
+my_data <- read_csv(my_filename)
+
+```
+
+
+### gml
+```{r}
+my_model3 <- glm(Survived ~ ., data = my_data, family = "binomial")
+```
+```{r}
+summary(my_model3)
+```
+
+```{r}
+my_model4 <- glm(Survived ~ Pclass + Sex + Age, data = my_data, family = "binomial")
+```
+
+```{r}
+summary(my_model4)
+```
+```{r}
+datos_nuevos <- data.frame(Pclass=1, Sex="female",Age=30)
+predict(my_model4, newdata = datos_nuevos,type = "response")
+```
+
+```{r}
+datos_nuevos <- data.frame(Pclass=3, Sex="male", Age=50)
+predict(my_model4, newdata = datos_nuevos,type = "response")
+```
+```{r}
+datos_nuevos <- data.frame(Pclass=2, Sex="male", Age=50)
+predict(my_model4, newdata = datos_nuevos,type = "response")
+```
+```{r}
+datos_nuevos <- data.frame(Pclass=1, Sex="male", Age=50)
+predict(my_model4, newdata = datos_nuevos,type = "response")
+```
+
