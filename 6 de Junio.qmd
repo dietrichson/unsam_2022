@@ -1,0 +1,84 @@
+---
+title: "Untitled"
+format: html
+editor: visual
+---
+
+**Modelos estadísticos:**
+
+```{r}
+library(tidyverse, quietly = TRUE, warn.conflicts = FALSE ) 
+mtcars
+```
+
+```{r}
+library(tidyverse, quietly = TRUE, warn.conflicts = FALSE )
+my_model <- lm(cyl ~ hp, data = mtcars)
+```
+
+```{r}
+mtcars %>% 
+  ggplot(aes(cyl, hp))+
+  geom_point()+
+  geom_smooth(method="lm")+
+  xlim(c(-1,5))
+```
+
+```{r}
+my_model
+```
+
+```{r}
+summary(my_model)
+```
+
+```{r}
+my_model2 <- lm(mpg ~ hp + gear + carb + cyl, data = mtcars)
+```
+
+```{r}
+summary(my_model2)
+```
+
+```{r}
+my_model3 <- lm(gear ~ cyl + mpg + carb + hp, data = mtcars)
+summary(my_model3)
+```
+
+```{r}
+my_model3 <- lm(cyl ~ gear + mpg + carb + hp, data = mtcars)
+summary(my_model3)
+```
+
+```{r}
+my_model3 <- lm(carb ~ cyl + mpg + gear + hp, data = mtcars)
+summary(my_model3)
+```
+
+```{r}
+my_model3 <- lm(hp ~ cyl + mpg + carb + gear, data = mtcars)
+summary(my_model3)
+```
+
+```{r}
+test <- mtcars %>%
+  slice_sample(n=10)
+```
+
+```{r}
+predict(my_model3, newdata = test)
+```
+
+```{r}
+my_data2 <- data.frame(x=predict(my_model3),y=mtcars$hp)
+```
+
+```{r}
+my_data2$difencia <- my_data2$x-my_data2$y
+```
+
+```{r}
+my_data2 %>%
+  ggplot(aes(difencia))+
+  geom_density()
+```
