@@ -1,0 +1,136 @@
+---
+title: "Notas 6 de junio 2022"
+author: "Aleksander Dietrichson"
+format: html
+editor: visual
+---
+
+## Modelos estadísticos
+
+```{r}
+library(tidyverse, quietly = TRUE, warn.conflicts = FALSE )
+
+my_model <- lm(Sepal.Length ~ Sepal.Width , data = iris)
+```
+
+$$
+y \sim \alpha + \beta_1+\beta_2+...+\epsilon \\
+Y \sim \alpha + \beta_1+\beta_2+...+\epsilon \\
+y = \alpha + \beta_1+\beta_2+...+\epsilon \\
+\hat{Y} = \beta_0 + \beta_1+...+\epsilon
+$$
+
+```{r}
+iris %>% 
+  ggplot(aes(Sepal.Width, Sepal.Length))+
+  geom_point()+
+  geom_smooth(method="lm")+
+  xlim(c(-1,5))
+```
+
+```{r}
+my_model
+```
+
+```{r}
+summary(my_model)
+```
+
+```{r}
+my_model2 <- lm(Sepal.Length ~ Sepal.Width + Petal.Length + Petal.Width , data = iris)
+```
+
+```{r}
+summary(my_model2)
+```
+
+```{r}
+my_model3 <- lm(Sepal.Length ~ . , data = iris)
+
+summary(my_model3)
+```
+
+```{r}
+my_data <- iris %>% 
+  rownames_to_column()
+my_sample <- sample.int(nrow(my_data),100)
+
+train <- my_data %>% 
+  filter(rowname %in% as.character(my_sample))
+
+test <- my_data %>% 
+  filter(!rowname %in% as.character(my_sample))
+```
+
+```{r}
+my_model4 <- lm(Sepal.Length ~ . , data = train)
+
+summary(my_model4)
+```
+
+```{r}
+my_model5 <- lm(Sepal.Length ~ Sepal.Width + Petal.Length + Petal.Width + Species, 
+                data = train)
+
+summary(my_model5)
+```
+
+Con este modelo podemos usar la funcion "predict"
+
+```{r}
+
+test2 <- test %>% 
+  select(-rowname,-Sepal.Length)
+
+test2 %>% 
+  head()
+
+```
+
+```{r}
+predict(my_model5, newdata = head(test2))
+```
+
+Evualuar
+
+```{r}
+test %>% 
+  select(Sepal.Length) %>% 
+  head()
+```
+
+```{r}
+predict(my_model5)
+```
+
+```{r}
+my_data3 <- train %>% 
+  mutate(estimate = predict(my_model5))
+head(my_data3)
+
+```
+
+```{r}
+my_data3$difference <- my_data3$Sepal.Length - my_data3$estimate
+my_data3 %>% 
+  ggplot(aes(difference))+
+  geom_density()
+```
+
+```{r}
+my_data3$difference %>% mean()
+
+```
+
+## Datos del Titánic
+
+Fuente: https://gist.github.com/dietrichson/f76423eb99bbef6768d2f83e130efcd0
+
+```{r}
+library(tidyverse,quietly = TRUE, warn.conflicts = FALSE)
+
+my_filename <- "https://gist.github.com/dietrichson/f76423eb99bbef6768d2f83e130efcd0/raw/6907bb3a38bfbb6fccf3a8b1edfb90e39714d14f/titanic_dataset.csv"
+
+my_data <- read_csv(my_filename)
+
+```
