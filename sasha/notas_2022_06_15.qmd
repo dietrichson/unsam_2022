@@ -76,3 +76,15 @@ datos_nuevos <- data.frame(Pclass=1, Sex="male", Age=50)
 predict(my_model4, newdata = datos_nuevos,type = "response")
 ```
 
+```{r}
+test <- mtcars %>% 
+  slice_sample(n=10)
+
+test2 <- my_data %>% 
+  slice_sample(n=10)
+```
+
+```{r}
+predict(my_model4, newdata = test2, type="response")
+```
+
